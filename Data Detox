@@ -1,0 +1,20 @@
+import pandas as pd
+
+file_name = input("Enter your CSV file name: ")
+try:
+    data = pd.read_csv(file_name)
+    print("Original number of rows:", len(data))
+    print("Original number of columns:", len(data.columns))
+    print("\nMissing values:")
+    print(data.isnull().sum())
+    data.columns = data.columns.str.strip()
+    same_rows = data.duplicated().sum()
+    print("\nDuplicate rows:", same_rows)
+    for column in data.select_dtypes(include="object").columns:
+        data[column] = data[column].str.strip()
+    data = data.drop_duplicates()
+    print("\nRows after cleaning:", len(data))
+    data.to_csv("cleaned_data.csv", index=False)
+    print("Your cleaned file has been saved!")
+except FileNotFoundError:
+    print("File not found. Check the name and try again.")
